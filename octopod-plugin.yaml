@@ -1,0 +1,30 @@
+# An Octopod plugin: its tools, served by its MCP server, and what the personas using it read.
+name: example
+description: An example plugin — the local time anywhere, and greetings in the style of the workspace.
+server:
+  build: server
+  port: 8080
+  path: /mcp
+params:
+  - name: greeting
+    description: How to greet, for example Bonjour
+instructions: INSTRUCTIONS.md
+tools:
+  - name: local_time
+    description: Tells the current local time in a time zone.
+    approval: auto
+    input_schema:
+      type: object
+      additionalProperties: false
+      required: [timezone]
+      properties:
+        timezone: { type: string, description: 'IANA time zone, for example Asia/Tokyo.' }
+  - name: greet
+    description: Greets someone with the greeting of the workspace.
+    approval: auto
+    input_schema:
+      type: object
+      additionalProperties: false
+      required: [name]
+      properties:
+        name: { type: string }
