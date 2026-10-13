@@ -1,4 +1,5 @@
-# An Octopod plugin: its tools, served by its MCP server, and what the personas using it read.
+# An Octopod plugin: its tools, served by its MCP server, what the personas using it read, the
+# persona it brings and the cron job that persona runs.
 name: example
 description: An example plugin — the local time anywhere, and greetings in the style of the workspace.
 server:
@@ -28,3 +29,17 @@ tools:
       required: [name]
       properties:
         name: { type: string }
+personas:
+  # example-greeter in Octopod: its prompt is personas/greeter.md, its own know-how
+  # personas/greeter/skills/. Its grants are generated from what it names here.
+  - id: greeter
+    tools: [greet, local_time]
+crons:
+  # example.weekly-welcome in Octopod: runs in every workspace where example-greeter works.
+  - key: weekly-welcome
+    name: Weekly welcome
+    schedule: '0 9 * * 1'
+    time_zone: Europe/Paris
+    persona: greeter
+    delivery: message
+    prompt: Welcome the workspace to the new week, as your know-how describes it.
