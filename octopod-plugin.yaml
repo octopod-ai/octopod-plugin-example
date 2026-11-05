@@ -13,7 +13,8 @@ instructions: INSTRUCTIONS.md
 tools:
   - name: local_time
     description: Tells the current local time in a time zone.
-    approval: auto
+    # Decided before each call: it acts on no resource of Octopod, and only reads.
+    access: { resource: none, does: read }
     input_schema:
       type: object
       additionalProperties: false
@@ -22,7 +23,7 @@ tools:
         timezone: { type: string, description: 'IANA time zone, for example Asia/Tokyo.' }
   - name: greet
     description: Greets someone with the greeting of the workspace.
-    approval: auto
+    access: { resource: none, does: read }
     input_schema:
       type: object
       additionalProperties: false
@@ -34,6 +35,10 @@ personas:
   # personas/greeter/skills/. Its grants are generated from what it names here.
   - id: greeter
     tools: [greet, local_time]
+    # Why it holds each of its tools (and core_tools): a tool held for no reason is refused.
+    reasons:
+      greet: greet people with the greeting of the workspace, never one of its own
+      local_time: tell the local time where people are, never computed by itself
 crons:
   # example.weekly-welcome in Octopod: runs in every workspace where example-greeter works.
   - key: weekly-welcome
